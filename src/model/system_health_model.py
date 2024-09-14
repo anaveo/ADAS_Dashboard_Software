@@ -8,10 +8,10 @@ import time
 
 
 class SystemHealthModel(QObject):
-    data_received_cam_left = Signal(float, float, float)  # Signal to notify when new data is received
-    data_received_cam_right = Signal(float, float, float)  # Signal to notify when new data is received
+    data_received_cam_left = Signal(float, float)  # Signal to notify when new data is received
+    data_received_cam_right = Signal(float, float)  # Signal to notify when new data is received
 
-    def __init__(self, udp_port, timeout=1.0, buffer_size=128, retry_attempts=3):
+    def __init__(self, udp_port=5001, timeout=1.0, buffer_size=128, retry_attempts=3):
         super().__init__()
         self._udp_port = udp_port
         self._timeout = timeout
@@ -64,28 +64,26 @@ class SystemHealthModel(QObject):
             data_str = data.decode('utf-8')
             parts = data_str.split(',')
 
-            if len(parts) != 4:
+            if len(parts) != 3:
                 raise ValueError("Invalid data format received")
 
-            device_id, core_temp, cpu_usage, memory_usage = parts
+            device_id, core_temp, cpu_usage = parts
             if device_id not in self._device_lst:
                 raise ValueError(f"Unknown device: {device_id}")
 
             core_temp = float(core_temp)
             cpu_usage = float(cpu_usage)
-            memory_usage = float(memory_usage)
 
             self._camera_health_data[device_id] = {
                 'core_temp': core_temp,
-                'cpu_usage': cpu_usage,
-                'memory_usage': memory_usage
+                'cpu_usage': cpu_usage
             }
 
             # Safely emit the signal for the appropriate camera device
             if device_id == 'cam-left':
-                self.data_received_cam_left.emit(core_temp, cpu_usage, memory_usage)
+                self.data_received_cam_left.emit(core_temp, cpu_usage)
             elif device_id == 'cam-right':
-                self.data_received_cam_right.emit(core_temp, cpu_usage, memory_usage)
+                self.data_received_cam_right.emit(core_temp, cpu_usage)
 
         except Exception as e:
             logging.error(f"Error processing data: {e}")

@@ -28,7 +28,7 @@ def mock_udp_socket(monkeypatch):
 
 def test_signal_emission_for_left_camera(qtbot, system_health_model, mock_udp_socket):
     # Define the test message for the left camera
-    test_message = b'cam-left,50.0,30.0,70.0'
+    test_message = b'cam-left,50.0,30.0'
     mock_udp_socket(test_message)
 
     # Wait for the left camera signal
@@ -47,13 +47,12 @@ def test_signal_emission_for_left_camera(qtbot, system_health_model, mock_udp_so
     assert system_health_model.get_camera_health_data('cam-left') == {
         'core_temp': 50.0,
         'cpu_usage': 30.0,
-        'memory_usage': 70.0
     }
 
 
 def test_signal_emission_for_right_camera(qtbot, system_health_model, mock_udp_socket):
     # Define the test message for the left camera
-    test_message = b'cam-right,52.0,31.0,73.0'
+    test_message = b'cam-right,52.0,31.0'
     mock_udp_socket(test_message)
 
     # Wait for the right camera signal
@@ -72,16 +71,15 @@ def test_signal_emission_for_right_camera(qtbot, system_health_model, mock_udp_s
     assert system_health_model.get_camera_health_data('cam-right') == {
         'core_temp': 52.0,
         'cpu_usage': 31.0,
-        'memory_usage': 73.0
     }
 
 
 def test_signal_emission_for_both_cameras(qtbot, system_health_model, mock_udp_socket):
     # Define the test message for the left camera
-    test_message_left = b'cam-left,52.1,31.1,73.3'
+    test_message_left = b'cam-left,52.1,31.1'
     mock_udp_socket(test_message_left)
     # Define the test message for the left camera
-    test_message_right = b'cam-right,51.1,36.1,73.3'
+    test_message_right = b'cam-right,51.1,36.1'
     mock_udp_socket(test_message_right)
 
     # Wait for the left camera signal
@@ -100,13 +98,11 @@ def test_signal_emission_for_both_cameras(qtbot, system_health_model, mock_udp_s
     assert system_health_model.get_camera_health_data('cam-left') == {
         'core_temp': 52.1,
         'cpu_usage': 31.1,
-        'memory_usage': 73.3
     }
     # Verify data for the right camera
     assert system_health_model.get_camera_health_data('cam-right') == {
         'core_temp': 51.1,
         'cpu_usage': 36.1,
-        'memory_usage': 73.3
     }
 
 
@@ -117,12 +113,10 @@ def test_get_all_camera_health_data(system_health_model):
         'cam-left': {
             'core_temp': 45.0,
             'cpu_usage': 23.5,
-            'memory_usage': 67.8
         },
         'cam-right': {
             'core_temp': 50.0,
             'cpu_usage': 30.0,
-            'memory_usage': 70.0
         }
     }
 
@@ -134,12 +128,10 @@ def test_get_all_camera_health_data(system_health_model):
         'cam-left': {
             'core_temp': 45.0,
             'cpu_usage': 23.5,
-            'memory_usage': 67.8
         },
         'cam-right': {
             'core_temp': 50.0,
             'cpu_usage': 30.0,
-            'memory_usage': 70.0
         }
     }
     assert result == expected_data, "All camera health data different from expected"
@@ -152,7 +144,6 @@ def test_get_camera_health_data(system_health_model):
         'cam-right': {
             'core_temp': 45.0,
             'cpu_usage': 23.5,
-            'memory_usage': 67.8
         }
     }
 
@@ -163,7 +154,6 @@ def test_get_camera_health_data(system_health_model):
     expected_data = {
         'core_temp': 45.0,
         'cpu_usage': 23.5,
-        'memory_usage': 67.8
     }
     assert result == expected_data, "Camera health data different from expected"
 
@@ -171,7 +161,7 @@ def test_get_camera_health_data(system_health_model):
 def test_error_handling_bad_id(system_health_model):
     """Test error handling in data processing."""
     # Define the test message for the left camera
-    bad_id_data = 'device1,45.0,23.5,41.2'
+    bad_id_data = 'device1,45.0,23.5'
 
     # Simulate receiving invalid data
     system_health_model._process_data(bad_id_data.encode('utf-8'))
@@ -183,7 +173,7 @@ def test_error_handling_bad_id(system_health_model):
 def test_error_handling_bad_data(system_health_model):
     """Test error handling in data processing."""
     # Define the test message for the left camera
-    invalid_data = 'cam-left,45.0,23.5'
+    invalid_data = 'cam-left,45.0'
 
     # Simulate receiving invalid data
     system_health_model._process_data(invalid_data.encode('utf-8'))
