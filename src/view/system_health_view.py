@@ -1,22 +1,62 @@
-import time
-
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QMainWindow
 from PySide6.QtCore import Qt
-from src.controller.system_health_controller import SystemHealthController
-from src.model.system_health_model import SystemHealthModel
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QButtonGroup
+from PySide6.QtWidgets import QButtonGroup
 from PySide6.QtCore import Signal, Slot
 from src.view.generated_ui.main_window_ui import Ui_MainWindow
 
+from src.view.camera_view_page import CameraView
+from src.view.lane_view_page import LaneView
+from src.view.diagnostic_view_page import DiagnosticView
+
+from src.controller.system_health_controller import SystemHealthController
+
+from src.model.system_health_model import SystemHealthModel
+
+
 class MainWindow(QMainWindow):
-    def __init__(self, controller: SystemHealthController):
+    def __init__(self):
         super(MainWindow, self).__init__()
-        self.controller = controller
 
-        self.ui = Ui_MainWindow()  # Create an instance of the UI class
-        self.ui.setupUi(self)  # Set up the UI with this MainWindow
+        # Initialize models
+        self.system_health_model = SystemHealthModel(udp_port=5005)
+        # self.camera_model = CameraModel()  # Replace with actual model
+        # self.driving_conditions_model = DrivingConditionsModel()  # Replace with actual model
 
+        # Initialize controllers
+        self.diagnostics_controller = SystemHealthController(model=self.system_health_model)
+        # self.camera_controller = CameraController()
+        # self.driving_conditions_controller = DrivingConditionsController()
+
+        # Create and set up UI instance
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        # UI Pages
+        self.camera_page = None
+        self.lane_page = None
+        self.diagnostic_page = None
+
+        # Load pages and set up navigation bar
+        self._load_pages()
+        self._init_navigation_bar()
+
+        self.ui.pageStack.setCurrentWidget(self.camera_page)
+
+    def _load_pages(self):
+        # Initialize and load Camera Page
+        self.camera_page = CameraView()
+        self.ui.pageStack.addWidget(self.camera_page)
+
+        # Initialize and load Lane Page
+        self.lane_page = LaneView()
+        self.ui.pageStack.addWidget(self.lane_page)
+
+        # Initialize and load Diagnostic Page
+        self.diagnostic_page = DiagnosticView(controller=self.diagnostics_controller)
+        self.ui.pageStack.addWidget(self.diagnostic_page)
+
+    def _init_navigation_bar(self):
         # Create a button group
         self.navigation_bar_button_group = QButtonGroup(self)
         self.navigation_bar_button_group.setExclusive(True)  # Only one button can be active at a time
@@ -27,63 +67,13 @@ class MainWindow(QMainWindow):
         self.navigation_bar_button_group.addButton(self.ui.diagnosticViewButton)
 
         # Connect buttons to show different pages in QStackedWidget
-        self.ui.cameraViewButton.clicked.connect(lambda: self.show_page(0))  # Show page 1
-        self.ui.laneViewButton.clicked.connect(lambda: self.show_page(1))  # Show page 2
-        self.ui.diagnosticViewButton.clicked.connect(lambda: self.show_page(2))  # Show page 3
+        self.ui.cameraViewButton.clicked.connect(lambda: self._show_page(0))  # Show camera view
+        self.ui.laneViewButton.clicked.connect(lambda: self._show_page(1))  # Show lane view
+        self.ui.diagnosticViewButton.clicked.connect(lambda: self._show_page(2))  # Show diagnostic view
 
-        self._init_diagnostic_view()
+        # Refresh data when diagnostic page opened
+        # self.ui.diagnosticViewButton.clicked.connect(lambda: self.diagnostic_page.update_all_displays())  # Show page 3
 
-    def _init_diagnostic_view(self):
-        self.ui.dataDisplay_1.update_name("Left Camera")
-        self.ui.dataDisplay_1.add_second_indicator()
-
-        self.ui.dataDisplay_2.update_name("Dashboard")
-        self.ui.dataDisplay_2.add_second_indicator()
-
-        self.ui.dataDisplay_3.update_name("Right Camera")
-        self.ui.dataDisplay_3.add_second_indicator()
-
-        self.ui.dataDisplay_4.update_name("Power Module")
-        self.ui.dataDisplay_5.update_name("Wheel Driver")
-
-        self.controller.data_updated_cam_left.connect(self.ui.dataDisplay_1.update_indicators)
-        self.controller.data_updated_cam_right.connect(self.ui.dataDisplay_3.update_indicators)
-
-    def show_page(self, index):
+    def _show_page(self, index):
         """Function to switch pages in the QStackedWidget"""
-        self.ui.stackedWidget.setCurrentIndex(index)
-
-        # # Create and set up the central widget and layout
-        # central_widget = QWidget()
-        # self.setCentralWidget(central_widget)
-        # layout = QVBoxLayout()
-        # central_widget.setLayout(layout)
-        #
-        # # Create widgets for each camera
-        # self.camera_widget1 = CameraWidget(camera_id="camera1")
-        # self.camera_widget2 = CameraWidget(camera_id="camera2")
-        #
-        # # Add widgets to layout
-        # layout.addWidget(self.camera_widget1)
-        # layout.addWidget(self.camera_widget2)
-        #
-        # # Connect controller signals to widget slots
-        # controller.data_updated_cam_left.connect(self.update_view_cam_left)
-        # controller.data_updated_cam_right.connect(self.update_view_cam_right)
-
-    @Slot(float, float, float)
-    def update_view_cam_left(self, core_temp, cpu_usage, memory_usage):
-        """Fetch health data from the model and emit signal to update the view."""
-        self.camera_widget1.update_data(core_temp, cpu_usage, memory_usage)
-
-    @Slot(float, float, float)
-    def update_view_cam_right(self, core_temp, cpu_usage, memory_usage):
-        """Fetch health data from the model and emit signal to update the view."""
-        self.camera_widget2.update_data(core_temp, cpu_usage, memory_usage)
-
-    def update_all_widgets(self, data):
-        """Update all camera widgets with the latest data."""
-        if 'camera1' in data:
-            self.camera_widget1.update_data(data)
-        if 'camera2' in data:
-            self.camera_widget2.update_data(data)
+        self.ui.pageStack.setCurrentIndex(index)

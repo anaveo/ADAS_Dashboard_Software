@@ -18,7 +18,6 @@ class DataDisplay(QWidget, Ui_DataDisplay):
                                                           f"<html><head/><body><p><span style=\" color:#eeeeee;\">{name}</span></p></body></html>",
                                                           None))
 
-    @Slot(float, float)
     def update_indicators(self, core_temp, cpu_usage):
         self.indicator_1.update_value(core_temp)
         if self.indicator_2 is not None and cpu_usage is not None:

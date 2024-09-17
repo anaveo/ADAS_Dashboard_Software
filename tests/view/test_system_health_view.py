@@ -48,7 +48,7 @@ def test_view_updates_on_left_camera_signal(qtbot, system_health_controller, sys
 
     # Wait for the left camera signal and check the view update
     with qtbot.waitSignal(system_health_controller.data_updated_cam_left, timeout=100):
-        system_health_controller.model._process_data(test_message)
+        system_health_controller.model._process_udp_data(test_message)
 
     # Ensure the view is updated correctly
     assert system_health_view.cam_left_label.text() == "Left Camera: Temp=42.0°C, CPU=21.5%, Memory=69.8%"
@@ -61,7 +61,7 @@ def test_view_updates_on_right_camera_signal(qtbot, system_health_controller, sy
 
     # Wait for the right camera signal and check the view update
     with qtbot.waitSignal(system_health_controller.data_updated_cam_right, timeout=100):
-        system_health_controller.model._process_data(test_message)
+        system_health_controller.model._process_udp_data(test_message)
 
     # Ensure the view is updated correctly
     assert system_health_view.cam_right_label.text() == "Right Camera: Temp=50.0°C, CPU=30.0%, Memory=70.0%"
@@ -82,13 +82,13 @@ def test_view_updates_for_both_cameras(qtbot, system_health_controller, system_h
     test_message_left = b'cam-left,42.0,21.5,69.8'
     mock_udp_socket(test_message_left)
     with qtbot.waitSignal(system_health_controller.data_updated_cam_left, timeout=100):
-        system_health_controller.model._process_data(test_message_left)
+        system_health_controller.model._process_udp_data(test_message_left)
 
     # Simulate a message for the right camera
     test_message_right = b'cam-right,50.0,30.0,70.0'
     mock_udp_socket(test_message_right)
     with qtbot.waitSignal(system_health_controller.data_updated_cam_right, timeout=100):
-        system_health_controller.model._process_data(test_message_right)
+        system_health_controller.model._process_udp_data(test_message_right)
 
     # Ensure the view is updated for both cameras
     assert system_health_view.cam_left_label.text() == "Left Camera: Temp=42.0°C, CPU=21.5%, Memory=69.8%"

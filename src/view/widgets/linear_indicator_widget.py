@@ -13,7 +13,7 @@ class LinearIndicator(QWidget, Ui_LinearIndicator):
         self.high_val = 100
         self.low_val = 0
         self.blocks = 16  # Number of total blocks
-        self.val = 50     # Initial value
+        self.val = 0     # Initial value
 
     @staticmethod
     def _validate_inputs(high_val: int, low_val: int):

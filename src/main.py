@@ -9,11 +9,11 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     # Initialize model and controller
-    model = SystemHealthModel(udp_port=5005)
-    controller = SystemHealthController(model)
+    # model = SystemHealthModel(udp_port=5005)
+    # controller = SystemHealthController(model)
 
     # Initialize the view
-    view = MainWindow(controller)
+    view = MainWindow()
     view.show()
 
     sys.exit(app.exec())

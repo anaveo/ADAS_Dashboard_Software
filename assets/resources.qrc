@@ -1,10 +1,11 @@
 <RCC>
   <qresource prefix="/">
-    <file>icons/icon-car-white.png</file>  <!-- relative path within qrc -->
-    <file>icons/icon-car-grey.png</file>  <!-- relative path within qrc -->
-    <file>icons/icon-tools-white.png</file>            <!-- add other icons as needed -->
-    <file>icons/icon-tools-grey.png</file>            <!-- add other icons as needed -->
-    <file>icons/icon-camera-white.png</file>            <!-- add other icons as needed -->
-    <file>icons/icon-camera-grey.png</file>            <!-- add other icons as needed -->
+    <file>icons/icon-car-white.png</file>
+    <file>icons/icon-car-grey.png</file>
+    <file>icons/icon-tools-white.png</file>
+    <file>icons/icon-tools-grey.png</file>
+    <file>icons/icon-camera-white.png</file>
+    <file>icons/icon-camera-grey.png</file>
+    <file>images/image-civic-top-back.png</file>
   </qresource>
 </RCC>

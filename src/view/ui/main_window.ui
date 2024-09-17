@@ -25,8 +25,8 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QStackedWidget" name="stackedWidget">
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QStackedWidget" name="pageStack">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -57,185 +57,10 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>-1</number>
     </property>
-    <widget class="QWidget" name="cameraViewTab">
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>410</x>
-        <y>130</y>
-        <width>100</width>
-        <height>100</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>100</width>
-        <height>100</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>100</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Camera View Window</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="diagnosticViewTab">
-     <property name="styleSheet">
-      <string notr="true">background-color:rgb(34,40,49)</string>
-     </property>
-     <widget class="QWidget" name="gridLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>797</width>
-        <height>472</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="0,0,0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SizeConstraint::SetFixedSize</enum>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="2">
-        <widget class="DataDisplay" name="dataDisplay_3" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="DataDisplay" name="dataDisplay_1" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="DataDisplay" name="dataDisplay_2" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>235</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="DataDisplay" name="dataDisplay_4" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>160</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>160</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="DataDisplay" name="dataDisplay_5" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>160</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>160</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="laneViewTab">
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>140</y>
-        <width>271</width>
-        <height>141</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Lane View Window</string>
-      </property>
-     </widget>
-    </widget>
    </widget>
-   <widget class="QWidget" name="Navigation_Bar" native="true">
+   <widget class="QWidget" name="navigationBar" native="true">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -442,14 +267,6 @@
    </widget>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>DataDisplay</class>
-   <extends>QWidget</extends>
-   <header>src.view.widgets.data_display_widget</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../../assets/resources.qrc"/>
  </resources>
