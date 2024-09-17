@@ -32,9 +32,10 @@ class Ui_DiagnosticViewPage(object):
         DiagnosticViewPage.setSizePolicy(sizePolicy)
         DiagnosticViewPage.setMinimumSize(QSize(800, 400))
         DiagnosticViewPage.setMaximumSize(QSize(800, 400))
+        DiagnosticViewPage.setStyleSheet(u"background-color:rgb(34,40,49)")
         self.gridLayoutWidget = QWidget(DiagnosticViewPage)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(0, 0, 797, 472))
+        self.gridLayoutWidget.setGeometry(QRect(0, 0, 801, 401))
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName(u"gridLayout")
@@ -46,6 +47,7 @@ class Ui_DiagnosticViewPage(object):
         self.dataDisplay_3.setSizePolicy(sizePolicy)
         self.dataDisplay_3.setMinimumSize(QSize(265, 235))
         self.dataDisplay_3.setMaximumSize(QSize(265, 235))
+        self.dataDisplay_3.setStyleSheet(u"")
 
         self.gridLayout.addWidget(self.dataDisplay_3, 0, 2, 1, 1)
 
@@ -55,6 +57,7 @@ class Ui_DiagnosticViewPage(object):
         self.dataDisplay_1.setSizePolicy(sizePolicy)
         self.dataDisplay_1.setMinimumSize(QSize(265, 235))
         self.dataDisplay_1.setMaximumSize(QSize(265, 235))
+        self.dataDisplay_1.setStyleSheet(u"")
 
         self.gridLayout.addWidget(self.dataDisplay_1, 0, 0, 1, 1)
 
@@ -64,6 +67,7 @@ class Ui_DiagnosticViewPage(object):
         self.dataDisplay_2.setSizePolicy(sizePolicy)
         self.dataDisplay_2.setMinimumSize(QSize(265, 235))
         self.dataDisplay_2.setMaximumSize(QSize(265, 235))
+        self.dataDisplay_2.setStyleSheet(u"")
 
         self.gridLayout.addWidget(self.dataDisplay_2, 0, 1, 1, 1)
 

@@ -31,7 +31,7 @@ class Ui_DataDisplay(object):
         DataDisplay.setSizePolicy(sizePolicy)
         DataDisplay.setMinimumSize(QSize(265, 165))
         DataDisplay.setMaximumSize(QSize(265, 165))
-        DataDisplay.setStyleSheet(u"background-color:rgb(34,40,49)")
+        DataDisplay.setStyleSheet(u"")
         self.errorLabel = QLabel(DataDisplay)
         self.errorLabel.setObjectName(u"errorLabel")
         self.errorLabel.setGeometry(QRect(0, 120, 265, 25))
