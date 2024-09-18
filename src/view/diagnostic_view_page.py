@@ -1,14 +1,14 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt, Signal, Slot
 from src.view.generated_ui.diagnostic_view_page_ui import Ui_DiagnosticViewPage
-from src.controller.system_health_controller import SystemHealthController
+
+import logging
+logger = logging.getLogger('view.diagnostic_view_page')
+
 
 class DiagnosticView(QWidget):
-    def __init__(self, controller: SystemHealthController, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-
-        # Initialize controller
-        self.controller = controller
 
         self.ui = Ui_DiagnosticViewPage()  # Create an instance of the UI class
         self.ui.setupUi(self)  # Set up the UI with this widget
@@ -31,9 +31,6 @@ class DiagnosticView(QWidget):
         # Initialize all displays
         self.update_all_displays()
 
-        # Connect controller signals to slots
-        self.controller.data_updated.connect(self.update_component_data)
-
     @Slot(str, float, float)
     def update_component_data(self, component_name: str, core_temp: float, cpu_usage: float):
         """Update data and UI for a specific component."""
@@ -53,7 +50,7 @@ class DiagnosticView(QWidget):
         if data_display:
             data_display.update_indicators(core_temp, cpu_usage)
         else:
-            logging.warning(f"Unknown component name: {component_name}")
+            logger.warning(f"Unknown component name: {component_name}")
 
     @Slot()
     def update_all_displays(self):

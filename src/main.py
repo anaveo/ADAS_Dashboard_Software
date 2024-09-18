@@ -1,19 +1,52 @@
 from PySide6.QtWidgets import QApplication
 import sys
-from controller.system_health_controller import SystemHealthController
-from model.system_health_model import SystemHealthModel
-from view.system_health_view import MainWindow
-import view.resources_rc  # Ensure the resources are imported
+import qasync
+import asyncio
+import json
+from main_application import MainApplication
+import logging.config
+
+import logging
+logger = logging.getLogger('main')
+
+
+def setup_logging(config_path='../config/logging_config.json'):
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+        logging.config.dictConfig(config)
+
+
+async def main():
+    # Initialize main application
+    main_app = MainApplication(config_path="")
+    await main_app.init_mvc()
+    main_app.run()
+    logger.info("Application started.")
+
+    # Keep the async event loop running for Qt events
+    try:
+        await asyncio.Event().wait()
+    except KeyboardInterrupt:
+        logger.info("Interrupted by user.")
+        await main_app.cleanup()
+
 
 if __name__ == '__main__':
+    # Set up logging
+    setup_logging()
+
+    # Create the QApplication before starting qasync event loop
     app = QApplication(sys.argv)
 
-    # Initialize model and controller
-    # model = SystemHealthModel(udp_port=5005)
-    # controller = SystemHealthController(model)
+    # Set up qasync event loop
+    loop = qasync.QEventLoop(app)
+    asyncio.set_event_loop(loop)
 
-    # Initialize the view
-    view = MainWindow()
-    view.show()
-
-    sys.exit(app.exec())
+    try:
+        # Start the asyncio event loop integrated with the Qt event loop
+        with loop:
+            loop.run_until_complete(main())
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+    finally:
+        logging.info("Application exited.")

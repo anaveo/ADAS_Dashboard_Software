@@ -5,37 +5,18 @@ from PySide6.QtWidgets import QButtonGroup
 from PySide6.QtCore import Signal, Slot
 from src.view.generated_ui.main_window_ui import Ui_MainWindow
 
-from src.view.camera_view_page import CameraView
-from src.view.lane_view_page import LaneView
-from src.view.diagnostic_view_page import DiagnosticView
-
-from src.controller.system_health_controller import SystemHealthController
-
-from src.model.system_health_model import SystemHealthModel
-
-
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, camera_page, lane_page, diagnostics_page):
         super(MainWindow, self).__init__()
-
-        # Initialize models
-        self.system_health_model = SystemHealthModel(udp_port=5005)
-        # self.camera_model = CameraModel()  # Replace with actual model
-        # self.driving_conditions_model = DrivingConditionsModel()  # Replace with actual model
-
-        # Initialize controllers
-        self.diagnostics_controller = SystemHealthController(model=self.system_health_model)
-        # self.camera_controller = CameraController()
-        # self.driving_conditions_controller = DrivingConditionsController()
 
         # Create and set up UI instance
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         # UI Pages
-        self.camera_page = None
-        self.lane_page = None
-        self.diagnostic_page = None
+        self.camera_page = camera_page
+        self.lane_page = lane_page
+        self.diagnostic_page = diagnostics_page
 
         # Load pages and set up navigation bar
         self._load_pages()
@@ -44,16 +25,8 @@ class MainWindow(QMainWindow):
         self.ui.pageStack.setCurrentWidget(self.camera_page)
 
     def _load_pages(self):
-        # Initialize and load Camera Page
-        self.camera_page = CameraView()
         self.ui.pageStack.addWidget(self.camera_page)
-
-        # Initialize and load Lane Page
-        self.lane_page = LaneView()
         self.ui.pageStack.addWidget(self.lane_page)
-
-        # Initialize and load Diagnostic Page
-        self.diagnostic_page = DiagnosticView(controller=self.diagnostics_controller)
         self.ui.pageStack.addWidget(self.diagnostic_page)
 
     def _init_navigation_bar(self):

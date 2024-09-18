@@ -1,0 +1,82 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "detailed": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(module)s - %(message)s"
+        },
+        "simple": {
+            "format": "%(asctime)s - %(module)s - %(levelname)s - %(message)s"
+        }
+    },
+    "handlers": {
+        "console_handler": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout"
+        }
+    },
+    "loggers": {
+        "root": {
+            "handlers": ["console_handler"],
+            "level": "DEBUG",
+            "propagate": false
+        },
+        "model.camera_model": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "model.diagnostic_model": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "view.camera_view_page": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "view.lane_view_page": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "view.diagnostic_view_page": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "controller.camera_controller": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "controller.lane_controller": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "controller.diagnostic_controller": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "services.communication_manager": {
+            "handlers": ["console_handler"],
+            "level": "WARNING",
+            "propagate": false
+        },
+        "main_application": {
+            "handlers": ["console_handler"],
+            "level": "INFO",
+            "propagate": false
+        },
+        "main": {
+            "handlers": ["console_handler"],
+            "level": "INFO",
+            "propagate": false
+        }
+    }
+}

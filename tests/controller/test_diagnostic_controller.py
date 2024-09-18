@@ -1,21 +1,21 @@
 import pytest
 from PySide6.QtCore import QCoreApplication
-from src.model.system_health_model import SystemHealthModel
-from src.controller.system_health_controller import SystemHealthController
+from src.model.diagnostic_model import DiagnosticModel
+from src.controller.diagnostic_controller import DiagnosticController
 
 
 @pytest.fixture
-def system_health_model():
-    """Fixture to initialize and clean up SystemHealthModel."""
-    model = SystemHealthModel(udp_port=5001)
+def diagnostic_model():
+    """Fixture to initialize and clean up DiagnosticModel."""
+    model = DiagnosticModel(udp_port=5001)
     yield model
     model.stop()
 
 
 @pytest.fixture
-def system_health_controller(system_health_model):
-    """Fixture to initialize SystemHealthController."""
-    controller = SystemHealthController(system_health_model)
+def diagnostic_controller(diagnostic_model):
+    """Fixture to initialize DiagnosticController."""
+    controller = DiagnosticController(diagnostic_model)
     return controller
 
 
@@ -34,21 +34,21 @@ def mock_udp_socket(monkeypatch):
     return _mock_udp_socket
 
 
-def test_signal_emission(qtbot, system_health_controller, mock_udp_socket):
+def test_signal_emission(qtbot, diagnostic_controller, mock_udp_socket):
     # Define the test message for the left camera
     test_message = b'cam-left,50.0,30.0'
     mock_udp_socket(test_message)
 
     # Wait for the left camera signal
-    with qtbot.waitSignal(system_health_controller.data_updated, timeout=100) as spy:
-        system_health_controller.model._process_udp_data(test_message)
+    with qtbot.waitSignal(diagnostic_controller.data_updated, timeout=100) as spy:
+        diagnostic_controller.model._process_udp_data(test_message)
 
     # Ensure the signal was emitted correctly
     assert spy.signal_triggered, "Left camera signal was not emitted."
     assert spy.args == ["cam-left", 50.0, 30.0]
 
     # Verify data for the left camera
-    assert system_health_controller.model.get_health_data('cam-left') == {
+    assert diagnostic_controller.model.get_health_data('cam-left') == {
         'core_temp': 50.0,
         'cpu_usage': 30.0,
     }
