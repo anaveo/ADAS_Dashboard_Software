@@ -59,10 +59,14 @@ if __name__ == '__main__':
     asyncio.set_event_loop(loop)
 
     try:
-        # Start the asyncio event loop integrated with the Qt event loop
         with loop:
             loop.run_until_complete(main())
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
     finally:
+        # Ensure cleanup is called regardless of how the program exits
+        try:
+            loop.run_until_complete(main_app.cleanup())  # Ensure proper async cleanup
+        except Exception as cleanup_error:
+            logger.error(f"Error during cleanup: {cleanup_error}")
         logging.info("Application exited.")
