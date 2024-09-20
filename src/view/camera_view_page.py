@@ -12,3 +12,4 @@ class CameraView(QWidget):
         self.ui = Ui_CameraViewPage()  # Create an instance of the UI class
         self.ui.setupUi(self)  # Set up the UI with this MainWindow
 
+        self.ui.leftCamStream.init_gstreamer(5000)

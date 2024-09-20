@@ -1,0 +1,8 @@
+{
+    "ports": {
+        "camera_diagnostic": 5005,
+        "camera_log": 5004,
+        "left_cam_cmd": 5010,
+        "right_cam_cmd": 5020
+    }
+}

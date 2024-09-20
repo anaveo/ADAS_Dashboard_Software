@@ -17,6 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QSizePolicy, QWidget)
 
+from src.view.widgets.camera_stream_widget import CameraStream
+
 class Ui_CameraViewPage(object):
     def setupUi(self, CameraViewPage):
         if not CameraViewPage.objectName():
@@ -29,6 +31,20 @@ class Ui_CameraViewPage(object):
         CameraViewPage.setSizePolicy(sizePolicy)
         CameraViewPage.setMinimumSize(QSize(800, 400))
         CameraViewPage.setMaximumSize(QSize(800, 400))
+        self.rightCamStream = CameraStream(CameraViewPage)
+        self.rightCamStream.setObjectName(u"rightCamStream")
+        self.rightCamStream.setGeometry(QRect(400, 0, 400, 400))
+        sizePolicy.setHeightForWidth(self.rightCamStream.sizePolicy().hasHeightForWidth())
+        self.rightCamStream.setSizePolicy(sizePolicy)
+        self.rightCamStream.setMinimumSize(QSize(400, 400))
+        self.rightCamStream.setMaximumSize(QSize(400, 400))
+        self.leftCamStream = CameraStream(CameraViewPage)
+        self.leftCamStream.setObjectName(u"leftCamStream")
+        self.leftCamStream.setGeometry(QRect(0, 0, 400, 400))
+        sizePolicy.setHeightForWidth(self.leftCamStream.sizePolicy().hasHeightForWidth())
+        self.leftCamStream.setSizePolicy(sizePolicy)
+        self.leftCamStream.setMinimumSize(QSize(400, 400))
+        self.leftCamStream.setMaximumSize(QSize(400, 400))
 
         self.retranslateUi(CameraViewPage)
 

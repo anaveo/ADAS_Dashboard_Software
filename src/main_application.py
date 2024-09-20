@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import json
 
 # Models
 from model.camera_model import CameraModel
@@ -21,8 +22,13 @@ from services.communication_manager import CommunicationManager  # Import Commun
 
 logger = logging.getLogger('main_application')
 
+
 class MainApplication:
-    def __init__(self, config_path=""):
+    def __init__(self, config_path='../config/config.json'):
+        self.config = {}
+        with open(config_path, 'r') as f:
+            self.config = json.load(f)
+
         # Models
         self.camera_model = None
         self.diagnostic_model = None
@@ -47,7 +53,7 @@ class MainApplication:
         try:
             # Initialize the models
             self.camera_model = CameraModel()
-            self.diagnostic_model = DiagnosticModel()
+            self.diagnostic_model = DiagnosticModel(udp_port=self.config.get('udp_port', 5005))
 
             # Initialize the views
             self.camera_view = CameraView()

@@ -18,7 +18,7 @@ def setup_logging(config_path='../config/logging_config.json'):
 
 async def main():
     # Initialize main application
-    main_app = MainApplication(config_path="")
+    main_app = MainApplication(config_path='../config/config.json')
     await main_app.init_mvc()
     main_app.run()
     logger.info("Application started.")

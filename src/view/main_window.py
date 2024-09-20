@@ -5,6 +5,8 @@ from PySide6.QtWidgets import QButtonGroup
 from PySide6.QtCore import Signal, Slot
 from src.view.generated_ui.main_window_ui import Ui_MainWindow
 
+from src.view.widgets.camera_stream_widget import GStreamerWidget
+
 class MainWindow(QMainWindow):
     def __init__(self, camera_page, lane_page, diagnostics_page):
         super(MainWindow, self).__init__()
@@ -43,6 +45,7 @@ class MainWindow(QMainWindow):
         self.ui.cameraViewButton.clicked.connect(lambda: self._show_page(0))  # Show camera view
         self.ui.laneViewButton.clicked.connect(lambda: self._show_page(1))  # Show lane view
         self.ui.diagnosticViewButton.clicked.connect(lambda: self._show_page(2))  # Show diagnostic view
+        self.ui.cameraViewButton.setChecked(True)  # Default page
 
         # Refresh data when diagnostic page opened
         # self.ui.diagnosticViewButton.clicked.connect(lambda: self.diagnostic_page.update_all_displays())  # Show page 3
@@ -50,3 +53,8 @@ class MainWindow(QMainWindow):
     def _show_page(self, index):
         """Function to switch pages in the QStackedWidget"""
         self.ui.pageStack.setCurrentIndex(index)
+
+        if index == 0:  # Video page is selected
+            self.camera_page.left_cam_stream.start_stream()
+        else:
+            self.camera_page.left_cam_stream.stop_stream()
