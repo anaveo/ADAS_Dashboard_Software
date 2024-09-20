@@ -24,8 +24,12 @@ def setup_logging(config_path=None):
 
 
 async def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Construct the absolute path to the logging_config.json file
+    config_path = os.path.join(script_dir, '../config/config.json')
+
     # Initialize main application
-    main_app = MainApplication(config_path='../config/config.json')
+    main_app = MainApplication(config_path=config_path)
     await main_app.init_mvc()
     main_app.run()
     logger.info("Application started.")
