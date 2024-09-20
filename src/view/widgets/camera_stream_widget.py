@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import Qt
+from src.view.generated_ui.camera_stream_widget_ui import Ui_CameraStreamWidget
 import gi
 
 gi.require_version('Gst', '1.0')
@@ -9,18 +10,13 @@ from gi.repository import Gst
 Gst.init(None)
 
 
-class CameraStream(QWidget):
+class CameraStream(QWidget, Ui_CameraStreamWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setupUi(self)
 
         self.pipeline = None
         self.sink = None
-
-        # Layout for the video display
-        self.layout = QVBoxLayout()
-        self.video_label = QLabel("Waiting for stream...")
-        self.layout.addWidget(self.video_label)
-        self.setLayout(self.layout)
 
     def init_gstreamer(self, port):
         # GStreamer setup
@@ -43,7 +39,7 @@ class CameraStream(QWidget):
         image = QImage(data, width, height, QImage.Format_RGB888)
 
         # Display the frame in the QLabel
-        self.video_label.setPixmap(QPixmap.fromImage(image))
+        self.stream.setPixmap(QPixmap.fromImage(image))
         return Gst.FlowReturn.OK
 
     def start_stream(self):
