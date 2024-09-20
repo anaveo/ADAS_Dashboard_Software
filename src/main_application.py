@@ -3,22 +3,22 @@ import logging
 import json
 
 # Models
-from model.camera_model import CameraModel
-from model.diagnostic_model import DiagnosticModel
+from src.model.camera_model import CameraModel
+from src.model.diagnostic_model import DiagnosticModel
 
 # Views
-from view.camera_view_page import CameraView
-from view.lane_view_page import LaneView
-from view.diagnostic_view_page import DiagnosticView
+from src.view.camera_view_page import CameraView
+from src.view.lane_view_page import LaneView
+from src.view.diagnostic_view_page import DiagnosticView
 
 # Controllers
-from controller.camera_controller import CameraController
-from controller.diagnostic_controller import DiagnosticController
-from controller.lane_controller import LaneController
+from src.controller.camera_controller import CameraController
+from src.controller.diagnostic_controller import DiagnosticController
+from src.controller.lane_controller import LaneController
 
-from view.main_window import MainWindow
-import view.resources_rc  # Ensure resources are imported
-from services.communication_manager import CommunicationManager  # Import CommunicationManager
+from src.view.main_window import MainWindow
+import src.view.resources_rc  # Ensure resources are imported
+from src.services.communication_manager import CommunicationManager  # Import CommunicationManager
 
 logger = logging.getLogger('main_application')
 
