@@ -5,8 +5,31 @@ from PySide6.QtWidgets import QButtonGroup
 from PySide6.QtCore import Signal, Slot
 from src.view.generated_ui.main_window_ui import Ui_MainWindow
 
+
+class IViewPage:
+    """Interface for all view components."""
+
+    def setup(self):
+        raise NotImplementedError
+
+
+class CameraView(IViewPage):
+    def setup(self):
+        pass
+
+
+class LaneView(IViewPage):
+    def setup(self):
+        pass
+
+
+class DiagnosticView(IViewPage):
+    def setup(self):
+        pass
+
+
 class MainWindow(QMainWindow):
-    def __init__(self, camera_page, lane_page, diagnostics_page):
+    def __init__(self, camera_page: IViewPage, lane_page: IViewPage, diagnostics_page: IViewPage):
         super(MainWindow, self).__init__()
 
         # Create and set up UI instance
@@ -53,6 +76,6 @@ class MainWindow(QMainWindow):
         self.ui.pageStack.setCurrentIndex(index)
 
         if index == 0:  # Video page is selected
-            self.camera_page.left_cam_stream.start_stream()
+            self.camera_page.ui.leftCamStream.start_stream()
         else:
-            self.camera_page.left_cam_stream.stop_stream()
+            self.camera_page.ui.leftCamStream.stop_stream()
