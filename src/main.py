@@ -3,7 +3,7 @@ import sys
 import qasync
 import asyncio
 import json
-from main_application import MainApplication
+from src.main_application import MainApplication
 import logging.config
 
 import logging
