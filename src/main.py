@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QApplication
 import sys
+import os
 import qasync
 import asyncio
 import json
@@ -10,7 +11,13 @@ import logging
 logger = logging.getLogger('main')
 
 
-def setup_logging(config_path='../config/logging_config.json'):
+def setup_logging(config_path=None):
+    if config_path is None:
+        # Get the absolute path of the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Construct the absolute path to the logging_config.json file
+        config_path = os.path.join(script_dir, '../config/logging_config.json')
+
     with open(config_path, 'r') as f:
         config = json.load(f)
         logging.config.dictConfig(config)
