@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import Qt
-from src.view.generated_ui.camera_stream_widget_ui import Ui_CameraStreamWidget
+from src.view.generated_ui.camera_stream_widget_ui import Ui_CameraStream
 import gi
 
 gi.require_version('Gst', '1.0')
@@ -10,7 +10,7 @@ from gi.repository import Gst
 Gst.init(None)
 
 
-class CameraStream(QWidget, Ui_CameraStreamWidget):
+class CameraStream(QWidget, Ui_CameraStream):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
