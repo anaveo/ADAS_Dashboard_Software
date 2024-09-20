@@ -86,6 +86,7 @@ class MainApplication:
             self.main_window.show()
         else:
             logger.error("MainWindow is not initialized.")
+            raise RuntimeError("MainWindow is not initialized.")
 
     async def cleanup(self):
         """

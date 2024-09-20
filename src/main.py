@@ -31,7 +31,12 @@ async def main():
     # Initialize main application
     main_app = MainApplication(config_path=config_path)
     await main_app.init_mvc()
-    main_app.run()
+    try:
+        main_app.run()
+    except Exception as e:
+        logger.error(f"Error running application: {e}")
+        raise e
+
     logger.info("Application started.")
 
     # Keep the async event loop running for Qt events
