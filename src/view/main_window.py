@@ -5,8 +5,6 @@ from PySide6.QtWidgets import QButtonGroup
 from PySide6.QtCore import Signal, Slot
 from src.view.generated_ui.main_window_ui import Ui_MainWindow
 
-from src.view.widgets.camera_stream_widget import GStreamerWidget
-
 class MainWindow(QMainWindow):
     def __init__(self, camera_page, lane_page, diagnostics_page):
         super(MainWindow, self).__init__()
