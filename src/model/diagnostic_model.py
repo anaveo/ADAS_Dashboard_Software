@@ -14,7 +14,7 @@ class DiagnosticModel(QObject):
 
     def __init__(self, diagnostic_port=5000):
         super().__init__()
-        self._diagnostic_udp_port = diagnostic_udp_port
+        self._diagnostic_udp_port = diagnostic_port
         self._health_data = {}
         self._stop_event = threading.Event()
 
