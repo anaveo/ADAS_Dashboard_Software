@@ -44,8 +44,8 @@ class CameraStream(QWidget, Ui_CameraStream):
 
     def start_stream(self):
         self.pipeline.set_state(Gst.State.PLAYING)
-        self.stream.setText(QCoreApplication.translate("CameraStream", u"<html><head/><body><p><span style=\" font-size:18pt; color:#eeeeee;\">Waiting for stream...</span></p></body></html>", None))
+        self.stream.setText("Waiting for stream...")
 
     def stop_stream(self):
         self.pipeline.set_state(Gst.State.NULL)
-        self.stream.setText(QCoreApplication.translate("CameraStream", u"<html><head/><body><p><span style=\" font-size:18pt; color:#eeeeee;\">Stream stopped</span></p></body></html>", None))
+        self.stream.setText("Stream stopped")
