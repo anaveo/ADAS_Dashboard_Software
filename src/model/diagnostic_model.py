@@ -12,7 +12,7 @@ logger = logging.getLogger('model.diagnostic_model')
 class DiagnosticModel(QObject):
     data_received = Signal(str, float, float)  # Signal to notify when new data is received
 
-    def __init__(self, diagnostic_udp_port=5000):
+    def __init__(self, diagnostic_port=5000):
         super().__init__()
         self._diagnostic_udp_port = diagnostic_udp_port
         self._health_data = {}
