@@ -6,8 +6,8 @@ from src.view.generated_ui.camera_view_page_ui import Ui_CameraViewPage
 
 
 class CameraView(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent, left_cam_port=5010, right_cam_port=5020)
+    def __init__(self, left_cam_port=5010, right_cam_port=5020, parent=None):
+        super().__init__(parent)
         self.left_cam_port = left_cam_port
         self.right_cam_port = right_cam_port
 
