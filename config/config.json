@@ -1,8 +1,18 @@
 {
     "ports": {
-        "camera_diagnostic": 5005,
-        "camera_log": 5004,
-        "left_cam_cmd": 5010,
-        "right_cam_cmd": 5020
+	"left-cam": {
+		"stream": 5010,
+		"command": 5011,
+		"data": 5012,
+		"logs": 5013,
+		"diagnostic": 5000
+	},
+	"right-cam": {
+		"stream": 5020,
+		"command": 5021,
+		"data": 5022,
+		"logs": 5023,
+		"diagnostic": 5000
+	}
     }
 }

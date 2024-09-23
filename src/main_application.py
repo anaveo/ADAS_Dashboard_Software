@@ -53,7 +53,7 @@ class MainApplication:
         try:
             # Initialize the models
             self.camera_model = CameraModel()
-            self.diagnostic_model = DiagnosticModel(udp_port=self.config.get('udp_port', 5005))
+            self.diagnostic_model = DiagnosticModel(diagnostic_udp_port=self.config["ports"]["left-cam"]["diagnostic"])
 
             # Initialize the views
             self.camera_view = CameraView()

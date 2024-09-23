@@ -12,9 +12,9 @@ logger = logging.getLogger('model.diagnostic_model')
 class DiagnosticModel(QObject):
     data_received = Signal(str, float, float)  # Signal to notify when new data is received
 
-    def __init__(self, udp_port=5005):
+    def __init__(self, diagnostic_udp_port=5000):
         super().__init__()
-        self._udp_port = udp_port
+        self._diagnostic_udp_port = diagnostic_udp_port
         self._health_data = {}
         self._stop_event = threading.Event()
 
@@ -34,10 +34,10 @@ class DiagnosticModel(QObject):
             self._manager = CommunicationManager.get_instance()
 
             # Ensure the port is added before registering the callback
-            await self._manager.add_udp_port(self._udp_port)
-            self._manager.register_udp_callback(self._udp_port, self._udp_callback)
+            await self._manager.add_udp_port(self._diagnostic_udp_port)
+            self._manager.register_udp_callback(self._diagnostic_udp_port, self._udp_callback)
 
-            logger.info(f"Successfully started and registered on UDP port {self._udp_port}")
+            logger.info(f"Successfully started and registered on UDP port {self._diagnostic_udp_port}")
         except Exception as e:
             logger.error(f"Failed to start or register callback: {e}")
             await self.stop()
@@ -45,7 +45,7 @@ class DiagnosticModel(QObject):
     def _get_dashboard_data(self):
         while not self._stop_event.is_set():
             component = 'dashboard'
-            core_temp = 40  # psutil.sensors_temperatures()['cpu_thermal'][0].current
+            core_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
             cpu_usage = psutil.cpu_percent(interval=1)
             self.data_received.emit(component, core_temp, cpu_usage)
             time.sleep(10)
@@ -89,8 +89,8 @@ class DiagnosticModel(QObject):
 
             # Deregister or clean up any communication-related resources
             if self._manager:
-                self._manager.unregister_udp_callback(self._udp_port, self._udp_callback())
-                await self._manager.remove_udp_port(self._udp_port)
+                self._manager.unregister_udp_callback(self._diagnostic_udp_port, self._udp_callback())
+                await self._manager.remove_udp_port(self._diagnostic_udp_port)
             logger.info("Successfully stopped DiagnosticModel")
         except Exception as e:
             logger.error(f"Failed to stop DiagnosticModel: {e}")

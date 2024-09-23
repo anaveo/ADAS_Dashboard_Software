@@ -21,7 +21,7 @@ class CameraStream(QWidget, Ui_CameraStream):
     def init_gstreamer(self, port):
         # GStreamer setup
         self.pipeline = Gst.parse_launch(
-            f"udpsrc port={port}! h264parse ! v4l2h264dec ! videoconvert ! videoscale ! video/x-raw, width=400, height=400, format=RGB ! queue max-size-buffers=1 leaky=downstream ! appsink name=sink sync=false"
+            f"udpsrc port={port} ! h264parse ! v4l2h264dec ! videoconvert ! videoscale ! video/x-raw, width=400, height=400, format=RGB ! queue max-size-buffers=1 leaky=downstream ! appsink name=sink sync=false"
         )
         self.sink = self.pipeline.get_by_name("sink")
         self.sink.set_property("emit-signals", True)
