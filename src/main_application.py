@@ -52,11 +52,16 @@ class MainApplication:
     async def init_mvc(self):
         try:
             # Initialize the models
+            diagnostic_port = self.config["ports"]["left-cam"]["diagnostic"]
+
             self.camera_model = CameraModel()
-            self.diagnostic_model = DiagnosticModel(diagnostic_udp_port=self.config["ports"]["left-cam"]["diagnostic"])
+            self.diagnostic_model = DiagnosticModel(diagnostic_port=diagnostic_port)
 
             # Initialize the views
-            self.camera_view = CameraView()
+            left_cam_port = self.config["ports"]["left-cam"]["stream"]
+            right_cam_port = self.config["ports"]["right-cam"]["stream"]
+
+            self.camera_view = CameraView(left_cam_port=left_cam_port, right_cam_port=right_cam_port)
             self.lane_view = LaneView()
             self.diagnostic_view = DiagnosticView()
 
