@@ -2,7 +2,7 @@ import pytest
 import asyncio
 from unittest.mock import patch, MagicMock
 from src.model.diagnostic_model import DiagnosticModel
-from src.services.communication_manager import CommunicationManager
+from src.services.network_manager import NetworkManager
 import time
 import psutil
 
@@ -51,8 +51,8 @@ def test_udp_callback(diagnostic_model):
 
 
 def test_stop(diagnostic_model):
-    with patch.object(CommunicationManager, 'remove_udp_port') as mock_remove_udp_port, \
-            patch.object(CommunicationManager, 'unregister_udp_callback') as mock_unregister_udp_callback:
+    with patch.object(NetworkManager, 'remove_udp_port') as mock_remove_udp_port, \
+            patch.object(NetworkManager, 'unregister_udp_callback') as mock_unregister_udp_callback:
         diagnostic_model.stop()
         mock_remove_udp_port.assert_called_once_with(5001)
         mock_unregister_udp_callback.assert_called_once()

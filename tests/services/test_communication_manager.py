@@ -2,7 +2,7 @@ import pytest
 import asyncio
 import socket
 from unittest.mock import patch, MagicMock, ANY
-from src.services.communication_manager import CommunicationManager
+from src.services.network_manager import NetworkManager
 import logging.config
 import json
 import sys
@@ -24,7 +24,7 @@ def event_loop():
 
 @pytest.fixture(scope="function")
 def manager(event_loop):
-    return CommunicationManager(loop=event_loop)
+    return NetworkManager(loop=event_loop)
 
 @pytest.mark.asyncio
 async def test_add_udp_port(manager):

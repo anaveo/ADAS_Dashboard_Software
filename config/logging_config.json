@@ -63,9 +63,14 @@
             "level": "WARNING",
             "propagate": false
         },
-        "services.communication_manager": {
+        "services.network_manager": {
             "handlers": ["console_handler"],
-            "level": "WARNING",
+            "level": "INFO",
+            "propagate": false
+        },
+        "services.can_manager": {
+            "handlers": ["console_handler"],
+            "level": "INFO",
             "propagate": false
         },
         "main_application": {

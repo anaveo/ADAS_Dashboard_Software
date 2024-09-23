@@ -16,9 +16,12 @@ from src.controller.camera_controller import CameraController
 from src.controller.diagnostic_controller import DiagnosticController
 from src.controller.lane_controller import LaneController
 
+# Communication managers
+from src.services.network_manager import NetworkManager
+from src.services.can_manager import CanManager
+
 from src.view.main_window import MainWindow
 import src.view.resources_rc  # Ensure resources are imported
-from src.services.communication_manager import CommunicationManager  # Import CommunicationManager
 
 logger = logging.getLogger('main_application')
 
@@ -43,11 +46,12 @@ class MainApplication:
         self.lane_controller = None
         self.diagnostic_controller = None
 
+        # Communication Managers
+        self.net_manager = NetworkManager()
+        self.can_manager = CanManager()
+
         # Main Window
         self.main_window = None
-
-        # Initialize CommunicationManager for handling UDP communication
-        self.comm_manager = CommunicationManager()
 
     async def init_mvc(self):
         try:
@@ -77,8 +81,11 @@ class MainApplication:
             # Start the diagnostic model
             await self.diagnostic_model.start()
 
-            # Start the CommunicationManager
-            await self.comm_manager.start()
+            # Start the NetworkManager
+            await self.net_manager.start()
+
+            # Start the CanManager
+            await self.can_manager.start()
 
             logger.info("MVC initialization complete.")
 
@@ -100,7 +107,10 @@ class MainApplication:
         if self.diagnostic_model:
             await self.diagnostic_model.stop()  # Assuming there's a stop method to stop the model
 
-        if self.comm_manager:
-            await self.comm_manager.stop()  # Ensure proper cleanup of communication manager
+        # Ensure proper cleanup of comms managers
+        if self.net_manager:
+            await self.net_manager.stop()
+        if self.can_manager:
+            await self.can_manager.stop()
 
         logger.info("Cleanup completed.")

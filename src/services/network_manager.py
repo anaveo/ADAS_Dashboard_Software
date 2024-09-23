@@ -2,7 +2,7 @@ import asyncio
 import socket
 
 import logging
-logger = logging.getLogger('services.communication_manager')
+logger = logging.getLogger('services.network_manager')
 
 
 class UDPProtocol(asyncio.DatagramProtocol):
@@ -57,17 +57,17 @@ class TCPProtocol(asyncio.Protocol):
             logger.warning("TCP Transport is not available")
 
 
-class CommunicationManager:
+class NetworkManager:
     _instance = None
 
     @staticmethod
     def get_instance():
-        if CommunicationManager._instance is None:
-            CommunicationManager._instance = CommunicationManager()
-        return CommunicationManager._instance
+        if NetworkManager._instance is None:
+            NetworkManager._instance = NetworkManager()
+        return NetworkManager._instance
 
     def __init__(self, loop: asyncio.AbstractEventLoop = None):
-        if CommunicationManager._instance is not None:
+        if NetworkManager._instance is not None:
             raise Exception("This class is a singleton!")
         self.udp_ports = set()
         self.udp_protocols = {}
@@ -186,6 +186,6 @@ class CommunicationManager:
             for transport in self.udp_transports.values():
                 transport.close()
             await asyncio.sleep(1)  # Give some time for transports to close
-            logger.info("CommunicationManager stopped")
+            logger.info("NetworkManager stopped")
         except Exception as e:
-            logger.error(f"Error stopping CommunicationManager: {e}")
+            logger.error(f"Error stopping NetworkManager: {e}")
