@@ -3,6 +3,7 @@ import threading
 import time
 import psutil
 from src.services.network_manager import NetworkManager
+from src.services.can_manager import CanManager
 import asyncio
 
 import logging
@@ -99,7 +100,7 @@ class DiagnosticModel(QObject):
 
             # Deregister or clean up any communication-related resources
             if self._net_manager:
-                self._net_manager.unregister_udp_callback(self._diagnostic_udp_port, self._udp_callback())
+                self._net_manager.unregister_udp_callback(self._diagnostic_udp_port, self._udp_callback)
                 await self._net_manager.remove_udp_port(self._diagnostic_udp_port)
             if self._can_manager:
                 self._can_manager.unregister_callback(self._can_callback)
