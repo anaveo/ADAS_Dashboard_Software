@@ -19,7 +19,8 @@ class CanManager:
         if CanManager._instance is not None:
             raise Exception("This class is a singleton!")
         self.loop = loop or asyncio.get_event_loop()
-        self.callbacks = {}  # Dictionary to store callbacks for specific message IDs {message_id: [callback1, callback2]}
+        self.id_callback_map = {}  # Dictionary to store callback functions for specific message IDs {message_id: [callback1, callback2]}
+        self.callback_id_map = {}  # Dictionary to store message ids for specific callback functions {callback1: [message_id1, message_id2]}
         self.can_interface = None
         self.is_running = False
 
@@ -65,7 +66,7 @@ class CanManager:
 
     async def read_can_messages(self):
         """
-        Asynchronously reads CAN messages from the bus and dispatches them to registered callbacks.
+        Asynchronously reads CAN messages from the bus and dispatches them to registered id_callback_map.
         """
         while self.is_running:
             try:
@@ -80,11 +81,11 @@ class CanManager:
 
     async def dispatch_message(self, message):
         """
-        Dispatches received CAN message to registered callbacks based on the message ID.
+        Dispatches received CAN message to registered id_callback_map based on the message ID.
         """
         message_id = message.arbitration_id
-        if message_id in self.callbacks:
-            for callback in self.callbacks[message_id]:
+        if message_id in self.id_callback_map:
+            for callback in self.id_callback_map[message_id]:
                 try:
                     # Call the callback asynchronously
                     await callback(message)
@@ -93,24 +94,42 @@ class CanManager:
         else:
             logger.warning(f"No callback registered for CAN message ID {message_id}")
 
-    def register_callback(self, message_id, callback):
+    def register_callback_single_id(self, message_id, callback):
         """
         Registers a callback for a specific CAN message ID.
         """
-        if message_id not in self.callbacks:
-            self.callbacks[message_id] = []
-        self.callbacks[message_id].append(callback)
+        if callback not in self.callback_id_map:
+            self.callback_id_map[callback] = []
+        self.callback_id_map[callback].append(message_id)
+        if message_id not in self.id_callback_map:
+            self.id_callback_map[message_id] = []
+        self.id_callback_map[message_id].append(callback)
         logger.info(f"Callback registered for CAN message ID {message_id}")
 
-    def unregister_callback(self, message_id, callback):
+    def register_callback_range_id(self, message_id_low, message_id_high, callback):
+        """
+        Registers a callback for a range of CAN message IDs.
+        """
+        if callback not in self.callback_id_map:
+            self.callback_id_map[callback] = []
+        for (message_id) in range(message_id_low, message_id_high+1):
+            self.callback_id_map[callback].append(message_id)
+            if message_id not in self.id_callback_map:
+                self.id_callback_map[message_id] = []
+            self.id_callback_map[message_id].append(callback)
+        logger.info(f"Callback registered for CAN message ID range {message_id_low} to {message_id_high}")
+
+    def unregister_callback(self, callback):
         """
         Unregisters a callback for a specific CAN message ID.
         """
-        if message_id in self.callbacks:
-            self.callbacks[message_id].remove(callback)
-            if not self.callbacks[message_id]:
-                del self.callbacks[message_id]
-            logger.info(f"Callback unregistered for CAN message ID {message_id}")
+        if callback in self.callback_id_map:
+            for message_id in self.callback_id_map[callback]:
+                self.id_callback_map[message_id].remove(callback)
+                if not self.id_callback_map[message_id]:
+                    del self.id_callback_map[message_id]
+            del self.callback_id_map[callback]
+            logger.info("Callback unregistered")
 
     async def send_can_message(self, message_id, data, interface='can0'):
         """

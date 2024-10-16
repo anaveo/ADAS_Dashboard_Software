@@ -116,7 +116,7 @@ class NetworkManager:
                 if protocol:
                     # If protocol has extra cleanup, it should be handled here
                     pass
-                self.udp_callbacks.pop(port, None)  # Remove callbacks for this port
+                self.udp_callbacks.pop(port, None)  # Remove id_callback_map for this port
             else:
                 logger.warning(f"UDP Port {port} is not managed by this server")
         except Exception as e:
