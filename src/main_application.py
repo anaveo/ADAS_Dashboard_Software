@@ -55,11 +55,6 @@ class MainApplication:
 
     async def init_mvc(self):
         try:
-            # Start the NetworkManager
-            await self.net_manager.start()
-
-            # Start the CanManager
-            await self.can_manager.start()
 
             # Initialize the models
             diagnostic_port = self.config["ports"]["left-cam"]["diagnostic"]
@@ -93,6 +88,15 @@ class MainApplication:
             logger.error(f"Error during MVC initialization: {e}")
             await self.cleanup()
 
+    async def init_comms_managers(self):
+        # Start the NetworkManager
+        await self.net_manager.start()
+
+        # Start the CanManager
+        await self.can_manager.start()
+
+        CanManager.register_callback_single_id(0x100, self.shutdown_callback)
+
     def run(self):
         if self.main_window:
             self.main_window.show()
@@ -114,3 +118,10 @@ class MainApplication:
             await self.can_manager.stop()
 
         logger.info("Cleanup completed.")
+
+    def shutdown_callback(self):
+        logger.info("Received shutdown command. Shutting down...")
+        self.cleanup()
+        self.main_window.close()
+        asyncio.get_event_loop().stop()
+        logger.info("Shutdown complete.")

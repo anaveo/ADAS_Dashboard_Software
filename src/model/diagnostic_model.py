@@ -38,7 +38,7 @@ class DiagnosticModel(QObject):
             self._net_manager.register_udp_callback(self._diagnostic_udp_port, self._udp_callback)
 
             self._can_manager = CanManager()
-            self._can_manager.register_callback_single_id(0x100, self._can_callback)
+            # self._can_manager.register_callback_single_id(0x100, self._can_callback)
 
             logger.info(f"Successfully started and registered on UDP port {self._diagnostic_udp_port}")
         except Exception as e:

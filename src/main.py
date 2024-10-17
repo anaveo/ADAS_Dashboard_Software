@@ -30,6 +30,7 @@ async def main():
 
     # Initialize main application
     main_app = MainApplication(config_path=config_path)
+    await main_app.init_comms_managers()
     await main_app.init_mvc()
     try:
         main_app.run()
