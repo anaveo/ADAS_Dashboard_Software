@@ -9,23 +9,20 @@ logger = logging.getLogger('services.can_manager')
 class CanManager:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super(CanManager, cls).__new__(cls)
-        return cls._instance
+    @staticmethod
+    def get_instance():
+        if CanManager._instance is None:
+            CanManager._instance = CanManager()
+        return CanManager._instance
 
     def __init__(self, loop: asyncio.AbstractEventLoop = None):
-        if not hasattr(self, 'initialized'):  # Ensures `__init__` only runs once
-            self.loop = loop or asyncio.get_event_loop()
-            self.id_callback_map = {}
-            self.callback_id_map = {}
-            self.can_interface = None
-            self.is_running = False
-            self.initialized = True
-
-    def __call__(self):
-        """Returns the same instance every time the class is called."""
-        return self._instance
+        if CanManager._instance is not None:
+            raise Exception("This class is a singleton!")
+        self.loop = loop or asyncio.get_event_loop()
+        self.id_callback_map = {}  # Dictionary to store callback functions for specific message IDs {message_id: [callback1, callback2]}
+        self.callback_id_map = {}  # Dictionary to store message ids for specific callback functions {callback1: [message_id1, message_id2]}
+        self.can_interface = None
+        self.is_running = False
 
     async def start(self, bitrate=125000, interface='can0'):
         """

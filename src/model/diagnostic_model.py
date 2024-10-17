@@ -85,7 +85,7 @@ class DiagnosticModel(QObject):
             logger.error(f"Error processing data: {e}")
 
     async def _can_callback(self, message):
-        logger.info(f"Received CAN message: {message}")
+        logger.warning(f"Received CAN message: {message}")
 
     async def stop(self):
         """
