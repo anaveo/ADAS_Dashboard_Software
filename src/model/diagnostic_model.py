@@ -7,11 +7,13 @@ from src.services.can_manager import CanManager
 import asyncio
 
 import logging
+
 logger = logging.getLogger('model.diagnostic_model')
 
 
 class DiagnosticModel(QObject):
-    data_received = Signal(str, float, float)  # Signal to notify when new data is received
+    health_data_received = Signal(str, float, float)  # Signal to notify when new health data is received
+    fault_data_received = Signal(str, str)  # Signal to notify when a fault is received
 
     def __init__(self, diagnostic_port=5000):
         super().__init__()
@@ -38,11 +40,14 @@ class DiagnosticModel(QObject):
             self._net_manager.register_udp_callback(self._diagnostic_udp_port, self._udp_callback)
 
             self._can_manager = CanManager()
-            self._can_manager.register_callback_range_id(0x220, 0x260, self._can_callback)
 
-            logger.info(f"Successfully started and registered on UDP port {self._diagnostic_udp_port}")
+            # Register CAN message callbacks
+            self._can_manager.register_callback_range_id(0x210, 0x260, self._device_status_can_callback)  # Health IDs
+            self._can_manager.register_callback_range_id(0x310, 0x360, self._device_status_can_callback)  # Fault IDs
+
+            logger.info("Successfully started")
         except Exception as e:
-            logger.error(f"Failed to start or register callback: {e}")
+            logger.error(f"Failed to start or register callbacks: {e}")
             await self.stop()
 
     def _get_dashboard_data(self):
@@ -50,10 +55,10 @@ class DiagnosticModel(QObject):
         Get dashboard health data every 10 seconds
         """
         while not self._stop_event.is_set():
-            component = 'dashboard'
+            component = 'dashboard-health'
             core_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
             cpu_usage = psutil.cpu_percent(interval=1)
-            self.data_received.emit(component, core_temp, cpu_usage)
+            self.health_data_received.emit(component, core_temp, cpu_usage)
             time.sleep(10)
 
     def _udp_callback(self, data, addr):
@@ -79,31 +84,35 @@ class DiagnosticModel(QObject):
             }
 
             # Safely emit the signal for the appropriate component
-            self.data_received.emit(component, core_temp, cpu_usage)
+            self.health_data_received.emit(component, core_temp, cpu_usage)
 
         except Exception as e:
             logger.error(f"Error processing data: {e}")
 
-    async def _device_health_can_callback(self, message):
-        """
-        Callback function to handle incoming CAN messages and emit signals based on the message ID.
-        """
-        can_id = hex(message.arbitration_id)  # Convert message ID to hex string format (e.g., "0x520")
+    def _validate_can_message(self, message):
+        can_id = hex(message.arbitration_id)
 
         # Look up the message ID in the message table
         if can_id not in self._can_manager.msg_table:
             logger.warning(f"CAN message ID {can_id} is not recognized")
-            return
+            return false
 
         # Check if the message DLC matches the expected DLC
         can_message_info = self._can_manager.msg_table[can_id]
         if message.dlc != can_message_info['dlc']:
             logger.warning(f"Received CAN message {can_id} with unexpected DLC {message.dlc}")
-            return
+            return false
 
-        # Emit signals based on the description associated with the message ID
-        self.data_received.emit(can_message_info['description'], message.data[0], message.data[1])
-        logger.info(f"Signal emitted for CAN message ID {can_id}")
+        return true
+
+    async def _device_status_can_callback(self, message):
+        """
+        Callback function to handle incoming CAN messages and emit signals based on the message ID.
+        """
+        if _validate_can_message(message):
+            # Emit signals based on the description associated with the message ID
+            self.health_data_received.emit(can_message_info['description'], message.data[0], message.data[1])
+            logger.info(f"Signal emitted for CAN message ID {hex(message.arbitration_id)}")
 
     async def stop(self):
         """
@@ -121,7 +130,7 @@ class DiagnosticModel(QObject):
                 self._net_manager.unregister_udp_callback(self._diagnostic_udp_port, self._udp_callback)
                 await self._net_manager.remove_udp_port(self._diagnostic_udp_port)
             if self._can_manager:
-                self._can_manager.unregister_callback(self._can_callback)
+                self._can_manager.unregister_callback(self._device_status_can_callback)
 
             logger.info("Successfully stopped DiagnosticModel")
         except Exception as e:

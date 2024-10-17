@@ -40,7 +40,7 @@ def test_signal_emission(qtbot, diagnostic_controller, mock_udp_socket):
     mock_udp_socket(test_message)
 
     # Wait for the left camera signal
-    with qtbot.waitSignal(diagnostic_controller.data_updated, timeout=100) as spy:
+    with qtbot.waitSignal(diagnostic_controller.health_data_updated, timeout=100) as spy:
         diagnostic_controller.model._process_udp_data(test_message)
 
     # Ensure the signal was emitted correctly

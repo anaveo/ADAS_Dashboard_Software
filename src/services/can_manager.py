@@ -14,7 +14,7 @@ class CanManager:
             cls._instance = super(CanManager, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, can_config_path, loop: asyncio.AbstractEventLoop = None):
+    def __init__(self, can_config_path='../config/can_config.json', loop: asyncio.AbstractEventLoop = None):
         if not hasattr(self, 'initialized'):  # Ensures `__init__` only runs once
             self.msg_table = {}
             with open(can_config_path, 'r') as f:

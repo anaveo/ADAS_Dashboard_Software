@@ -15,9 +15,9 @@ def diagnostic_model():
 
 @pytest.mark.asyncio
 async def test_get_dashboard_data(diagnostic_model):
-    # Create a mock function and connect it to the data_received signal
+    # Create a mock function and connect it to the health_data_received signal
     mock_function = MagicMock()
-    diagnostic_model.data_received.connect(mock_function)
+    diagnostic_model.health_data_received.connect(mock_function)
 
     with patch.object(asyncio, 'sleep') as mock_sleep, \
          patch.object(psutil, 'cpu_percent', return_value=30.0), \
@@ -33,11 +33,11 @@ def test_udp_callback(diagnostic_model):
     data = b'cam-left,50.0,30.0'
     addr = ('localhost', 5001)
 
-    # Create a mock function and connect it to the data_received signal
+    # Create a mock function and connect it to the health_data_received signal
     mock_function = MagicMock()
-    diagnostic_model.data_received.connect(mock_function)
+    diagnostic_model.health_data_received.connect(mock_function)
 
-    # Call the _udp_callback method, which should emit the data_received signal
+    # Call the _udp_callback method, which should emit the health_data_received signal
     diagnostic_model._udp_callback(data, addr)
 
     # Assert that the mock function was called with the correct arguments

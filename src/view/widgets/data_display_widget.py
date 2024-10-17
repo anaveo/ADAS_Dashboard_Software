@@ -9,11 +9,10 @@ class DataDisplay(QWidget, Ui_DataDisplay):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.indicator_1.update_fields("Temp", "H", "C", 85, 30)
+        self.indicator_1.update_fields("Temp", "H", "C", 85, 15)
         self.indicator_2 = None
 
     def update_name(self, name):
-        self.nameLabel.setText(name)
         self.nameLabel.setText(QCoreApplication.translate("DataDisplay",
                                                           f"<html><head/><body><p><span style=\" color:#eeeeee;\">{name}</span></p></body></html>",
                                                           None))
@@ -22,6 +21,11 @@ class DataDisplay(QWidget, Ui_DataDisplay):
         self.indicator_1.update_value(core_temp)
         if self.indicator_2 is not None and cpu_usage is not None:
             self.indicator_2.update_value(cpu_usage)
+
+    def update_error_message(self, message):
+        self.errorLabel.setText(QCoreApplication.translate("DataDisplay",
+                                                           f"<html><head/><body><p><span style=\" color:#ff0000;\">{message}</span></p></body></html>",
+                                                           None))
 
     def add_second_indicator(self):
         self.resize(265, 235)

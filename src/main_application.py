@@ -92,10 +92,9 @@ class MainApplication:
         # Start the NetworkManager
         await self.net_manager.start()
 
-        # Start the CanManager
+        # Start the CanManager and register shutdown CAN message
         await self.can_manager.start()
-
-        CanManager.register_callback_single_id(id=0x100, callback=self.shutdown_callback)
+        self.can_manager.register_callback_single_id(message_id=0x100, callback=self.shutdown_callback)
 
     def run(self):
         if self.main_window:
@@ -119,7 +118,7 @@ class MainApplication:
 
         logger.info("Cleanup completed.")
 
-    async def shutdown_callback(self):
+    async def shutdown_callback(self, message):
         logger.info("Received shutdown command. Shutting down...")
         await self.cleanup()
         self.main_window.close()

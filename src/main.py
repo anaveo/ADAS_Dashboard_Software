@@ -27,7 +27,7 @@ async def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     # Construct the absolute path to the logging_config.json file
     config_path = os.path.join(script_dir, '../config/config.json')
-    can_config_path = os.path.join(script_dir, '../can_config/config.json')
+    can_config_path = os.path.join(script_dir, '../config/can_config.json')
 
     # Initialize main application
     main_app = MainApplication(config_path=config_path, can_config_path=can_config_path)
