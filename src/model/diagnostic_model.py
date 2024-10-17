@@ -43,7 +43,7 @@ class DiagnosticModel(QObject):
 
             # Register CAN message callbacks
             self._can_manager.register_callback_range_id(0x210, 0x260, self._device_status_can_callback)  # Health IDs
-            self._can_manager.register_callback_range_id(0x310, 0x360, self._device_status_can_callback)  # Fault IDs
+            self._can_manager.register_callback_range_id(0x310, 0x360, self._device_fault_can_callback)  # Fault IDs
 
             logger.info("Successfully started")
         except Exception as e:
@@ -107,11 +107,26 @@ class DiagnosticModel(QObject):
 
     async def _device_status_can_callback(self, message):
         """
-        Callback function to handle incoming CAN messages and emit signals based on the message ID.
+        Callback function to handle incoming CAN status messages and emit signals based on the message ID.
         """
         if _validate_can_message(message):
             # Emit signals based on the description associated with the message ID
             self.health_data_received.emit(can_message_info['description'], message.data[0], message.data[1])
+            logger.info(f"Signal emitted for CAN message ID {hex(message.arbitration_id)}")
+
+    async def _device_fault_can_callback(self, message):
+        """
+        Callback function to handle incoming CAN fault messages and emit signals based on the message ID.
+        """
+        if _validate_can_message(message):
+            # TODO: Fix/standardize fault messages
+            fault_msgs = ["", "THERMAL FAULT", "OVERCURRENT FAULT", "OVERVOLTAGE FAULT", "UNDERVOLTAGE FAULT", "CPU OVERLOAD"]
+            if message.data[0] < len(fault_msgs):
+                logger.error(f"Invalid fault message index: {message.data[0]}")
+                return
+
+            # Emit signals based on the description associated with the message ID
+            self.fault_data_received.emit(can_message_info['description'], fault_msgs[message.data[0]])
             logger.info(f"Signal emitted for CAN message ID {hex(message.arbitration_id)}")
 
     async def stop(self):
