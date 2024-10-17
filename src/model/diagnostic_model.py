@@ -33,7 +33,7 @@ class DiagnosticModel(QObject):
             self._dashboard_data_thread.start()
 
             # Setup diagnostic UDP port
-            self._net_manager = NetworkManager.get_instance()
+            self._net_manager = NetworkManager()
             await self._net_manager.add_udp_port(self._diagnostic_udp_port)
             self._net_manager.register_udp_callback(self._diagnostic_udp_port, self._udp_callback)
 

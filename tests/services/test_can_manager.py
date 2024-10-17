@@ -14,6 +14,8 @@ def event_loop():
 
 @pytest.fixture
 def can_manager(event_loop):
+    # Reset the Singleton state before each test
+    CanManager._instance = None
     return CanManager(loop=event_loop)
 
 

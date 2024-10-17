@@ -26,6 +26,8 @@ def event_loop():
 
 @pytest.fixture(scope="function")
 def manager(event_loop):
+    # Reset the Singleton state before each test
+    NetworkManager._instance = None
     return NetworkManager(loop=event_loop)
 
 @pytest.mark.asyncio

@@ -60,21 +60,24 @@ class TCPProtocol(asyncio.Protocol):
 class NetworkManager:
     _instance = None
 
-    @staticmethod
-    def get_instance():
-        if NetworkManager._instance is None:
-            NetworkManager._instance = NetworkManager()
-        return NetworkManager._instance
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(NetworkManager, cls).__new__(cls)
+        return cls._instance
 
     def __init__(self, loop: asyncio.AbstractEventLoop = None):
-        if NetworkManager._instance is not None:
-            raise Exception("This class is a singleton!")
-        self.udp_ports = set()
-        self.udp_protocols = {}
-        self.udp_transports = {}
-        self.udp_callbacks = {}  # {port: [callback1, callback2, ...]}
-        self.tcp_callbacks = []  # List of callback functions for TCP connections
-        self.loop = loop or asyncio.get_event_loop()
+        if not hasattr(self, 'initialized'):  # Ensures `__init__` only runs once
+            self.loop = loop or asyncio.get_event_loop()
+            self.udp_ports = set()
+            self.udp_protocols = {}
+            self.udp_transports = {}
+            self.udp_callbacks = {}  # {port: [callback1, callback2, ...]}
+            self.tcp_callbacks = []  # List of callback functions for TCP connections
+            self.initialized = True
+
+    def __call__(self):
+        """Returns the same instance every time the class is called."""
+        return self._instance
 
     async def start(self):
         for port in self.udp_ports:
