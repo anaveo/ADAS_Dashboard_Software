@@ -89,36 +89,40 @@ class DiagnosticModel(QObject):
         except Exception as e:
             logger.error(f"Error processing data: {e}")
 
-    def _validate_can_message(self, message):
-        can_id = hex(message.arbitration_id)
+    def _validate_can_message(self, id, message_info, message):
 
         # Look up the message ID in the message table
-        if can_id not in self._can_manager.msg_table:
-            logger.warning(f"CAN message ID {can_id} is not recognized")
-            return false
+        if id not in self._can_manager.msg_table:
+            logger.warning(f"CAN message ID {id} is not recognized")
+            return False
 
         # Check if the message DLC matches the expected DLC
-        can_message_info = self._can_manager.msg_table[can_id]
-        if message.dlc != can_message_info['dlc']:
-            logger.warning(f"Received CAN message {can_id} with unexpected DLC {message.dlc}")
-            return false
+        if message.dlc != message_info['dlc']:
+            logger.warning(f"Received CAN message {id} with unexpected DLC {message.dlc}")
+            return False
 
-        return true
+        return True
 
     async def _device_status_can_callback(self, message):
         """
         Callback function to handle incoming CAN status messages and emit signals based on the message ID.
         """
-        if _validate_can_message(message):
+        id = hex(message.arbitration_id)
+        message_info = self._can_manager.msg_table[can_id]
+
+        if self._validate_can_message(id, message_info, message):
             # Emit signals based on the description associated with the message ID
-            self.health_data_received.emit(can_message_info['description'], message.data[0], message.data[1])
-            logger.info(f"Signal emitted for CAN message ID {hex(message.arbitration_id)}")
+            self.health_data_received.emit(message_info['description'], message.data[0], message.data[1])
+            logger.info(f"Signal emitted for CAN message ID {id}")
 
     async def _device_fault_can_callback(self, message):
         """
         Callback function to handle incoming CAN fault messages and emit signals based on the message ID.
         """
-        if _validate_can_message(message):
+        id = hex(message.arbitration_id)
+        message_info = self._can_manager.msg_table[can_id]
+
+        if self._validate_can_message(id, message_info, message):
             # TODO: Fix/standardize fault messages
             fault_msgs = ["", "THERMAL FAULT", "OVERCURRENT FAULT", "OVERVOLTAGE FAULT", "UNDERVOLTAGE FAULT", "CPU OVERLOAD"]
             if message.data[0] < len(fault_msgs):
@@ -126,8 +130,8 @@ class DiagnosticModel(QObject):
                 return
 
             # Emit signals based on the description associated with the message ID
-            self.fault_data_received.emit(can_message_info['description'], fault_msgs[message.data[0]])
-            logger.info(f"Signal emitted for CAN message ID {hex(message.arbitration_id)}")
+            self.fault_data_received.emit(message_info['description'], fault_msgs[message.data[0]])
+            logger.info(f"Signal emitted for CAN message ID {id}")
 
     async def stop(self):
         """

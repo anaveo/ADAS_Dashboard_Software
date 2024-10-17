@@ -3,6 +3,7 @@ import os
 import can
 import json
 import logging
+import binascii
 logger = logging.getLogger('services.can_manager')
 
 
@@ -46,7 +47,7 @@ class CanManager:
 
             # Define the filter for CAN IDs 0x100 to 0x4FF
             filters = [
-                {"can_id": 0x100, "can_mask": 0x700, "extended": False},  # Filter for 0x100 to 0x4FF
+                {"id": 0x100, "can_mask": 0x700, "extended": False},  # Filter for 0x100 to 0x4FF
             ]
 
             # Set the filters on the bus
@@ -80,7 +81,7 @@ class CanManager:
                 # Receive message from the CAN bus
                 message = self.can_interface.recv(timeout=1)  # Blocking read with timeout
                 if message is not None:
-                    logger.info(f"Received CAN message: {hex(message.arbitration_id)} - {message.data}")
+                    logger.info(f"Received CAN message: {hex(message.arbitration_id)} - {binascii.hexlify(message.data)}")
                     await self.dispatch_message(message)
             except Exception as e:
                 logger.error(f"Error reading CAN message: {e}")
