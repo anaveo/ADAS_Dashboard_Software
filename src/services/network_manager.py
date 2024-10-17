@@ -124,17 +124,17 @@ class NetworkManager:
 
     def register_udp_callback(self, port, callback):
         """Register a callback function for a specific UDP port."""
-        # if port in self.udp_ports:
-        self.udp_callbacks[port] = callback
+        if port not in self.udp_callbacks:
+            self.udp_callbacks[port] = []  # Initialize as an empty list
+        self.udp_callbacks[port].append(callback)
         logger.info(f"Callback registered for port {port}")
-        # else:
-        #     logger.warning(f"Cannot register callback: port {port} is not managed")
 
     def unregister_udp_callback(self, port, callback):
         if port in self.udp_callbacks:
             self.udp_callbacks[port].remove(callback)
             if not self.udp_callbacks[port]:
                 del self.udp_callbacks[port]
+            logger.info(f"Callback unregistered for port {port}")
 
     def handle_udp_data(self, port, data, addr):
         """Handle the incoming data from the UDP port."""

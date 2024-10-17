@@ -7,6 +7,8 @@ import logging.config
 import json
 import sys
 
+pytestmark = pytest.mark.usefixtures("event_loop")
+
 def setup_logging(config_path='logging_config.json'):
     with open(config_path, 'r') as f:
         config = json.load(f)
