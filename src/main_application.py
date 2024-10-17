@@ -119,9 +119,9 @@ class MainApplication:
 
         logger.info("Cleanup completed.")
 
-    def shutdown_callback(self):
+    async def shutdown_callback(self):
         logger.info("Received shutdown command. Shutting down...")
-        self.cleanup()
+        await self.cleanup()
         self.main_window.close()
         asyncio.get_event_loop().stop()
         logger.info("Shutdown complete.")
