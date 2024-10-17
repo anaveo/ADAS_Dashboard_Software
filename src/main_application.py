@@ -27,10 +27,14 @@ logger = logging.getLogger('main_application')
 
 
 class MainApplication:
-    def __init__(self, config_path='../config/config.json'):
+    def __init__(self, config_path='../config/config.json', can_config_path='../config/can_config.json'):
         self.config = {}
         with open(config_path, 'r') as f:
             self.config = json.load(f)
+
+        # Communication Managers
+        self.net_manager = NetworkManager()
+        self.can_manager = CanManager(can_config_path=can_config_path)
 
         # Models
         self.camera_model = None
@@ -45,10 +49,6 @@ class MainApplication:
         self.camera_controller = None
         self.lane_controller = None
         self.diagnostic_controller = None
-
-        # Communication Managers
-        self.net_manager = NetworkManager()
-        self.can_manager = CanManager()
 
         # Main Window
         self.main_window = None
@@ -95,7 +95,7 @@ class MainApplication:
         # Start the CanManager
         await self.can_manager.start()
 
-        CanManager.register_callback_single_id(0x100, self.shutdown_callback)
+        CanManager.register_callback_single_id(id=0x100, callback=self.shutdown_callback)
 
     def run(self):
         if self.main_window:

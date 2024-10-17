@@ -38,11 +38,11 @@ class DiagnosticView(QWidget):
 
         # Map component names to their corresponding UI elements
         ui_map = {
-            "cam-left": self.ui.dataDisplay_1,
-            "dashboard": self.ui.dataDisplay_2,
-            "cam-right": self.ui.dataDisplay_3,
-            "power-module": self.ui.dataDisplay_4,
-            "wheel-driver": self.ui.dataDisplay_5
+            "left-camera-health": self.ui.dataDisplay_1,
+            "dashboard-health": self.ui.dataDisplay_2,
+            "right-camera-health": self.ui.dataDisplay_3,
+            "power-module-health": self.ui.dataDisplay_4,
+            "wheel-driver-health": self.ui.dataDisplay_5
         }
 
         # Find the UI element for the given component

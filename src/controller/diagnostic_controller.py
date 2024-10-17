@@ -18,8 +18,6 @@ class DiagnosticController(QObject):
         self.model = model
         self.view = view
 
-        self._device_lst = ['cam-left', 'cam-right', 'dashboard']
-
         # Connect model's signal to the controller slot
         self.model.data_received.connect(self.update_view)
 
@@ -30,8 +28,6 @@ class DiagnosticController(QObject):
     def update_view(self, component, core_temp, cpu_usage):
         """Fetch health data from the model and emit signal to update the view."""
         try:
-            if component not in self._device_lst:
-                raise ValueError(f"Unknown component: {component}")
             if not isinstance(core_temp, (int, float)):
                 raise ValueError(f"Invalid core_temp: {core_temp}")
             if not isinstance(cpu_usage, (int, float)):

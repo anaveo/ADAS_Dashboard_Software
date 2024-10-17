@@ -1,7 +1,7 @@
 import asyncio
 import os
 import can
-
+import json
 import logging
 logger = logging.getLogger('services.can_manager')
 
@@ -14,8 +14,12 @@ class CanManager:
             cls._instance = super(CanManager, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, loop: asyncio.AbstractEventLoop = None):
+    def __init__(self, can_config_path, loop: asyncio.AbstractEventLoop = None):
         if not hasattr(self, 'initialized'):  # Ensures `__init__` only runs once
+            self.msg_table = {}
+            with open(can_config_path, 'r') as f:
+                self.msg_table = json.load(f)
+
             self.loop = loop or asyncio.get_event_loop()
             self.id_callback_map = {}
             self.callback_id_map = {}
@@ -46,7 +50,7 @@ class CanManager:
             ]
 
             # Set the filters on the bus
-            self.can_interface.set_filters(filters)
+            # self.can_interface.set_filters(filters)
 
             # Start an asyncio task for reading CAN messages
             self.loop.create_task(self.read_can_messages())
@@ -76,7 +80,7 @@ class CanManager:
                 # Receive message from the CAN bus
                 message = self.can_interface.recv(timeout=1)  # Blocking read with timeout
                 if message is not None:
-                    logger.info(f"Received CAN message: {message.arbitration_id} - {message.data}")
+                    logger.info(f"Received CAN message: {hex(message.arbitration_id)} - {message.data}")
                     await self.dispatch_message(message)
             except Exception as e:
                 logger.error(f"Error reading CAN message: {e}")
@@ -93,9 +97,9 @@ class CanManager:
                     # Call the callback asynchronously
                     await callback(message)
                 except Exception as e:
-                    logger.error(f"Error in callback for message ID {message_id}: {e}")
+                    logger.error(f"Error in callback for message ID {hex(message_id)}: {e}")
         else:
-            logger.warning(f"No callback registered for CAN message ID {message_id}")
+            logger.warning(f"No callback registered for CAN message ID {hex(message_id)}")
 
     def register_callback_single_id(self, message_id, callback):
         """
@@ -107,7 +111,7 @@ class CanManager:
         if message_id not in self.id_callback_map:
             self.id_callback_map[message_id] = []
         self.id_callback_map[message_id].append(callback)
-        logger.info(f"Callback registered for CAN message ID {message_id}")
+        logger.info(f"Callback registered for CAN message ID {hex(message_id)}")
 
     def register_callback_range_id(self, message_id_low, message_id_high, callback):
         """
@@ -120,7 +124,7 @@ class CanManager:
             if message_id not in self.id_callback_map:
                 self.id_callback_map[message_id] = []
             self.id_callback_map[message_id].append(callback)
-        logger.info(f"Callback registered for CAN message ID range {message_id_low} to {message_id_high}")
+        logger.info(f"Callback registered for CAN message ID range {hex(message_id_low)} to {hex(message_id_high)}")
 
     def unregister_callback(self, callback):
         """
@@ -143,4 +147,4 @@ class CanManager:
             self.can_interface.send(message)
             logger.info(f"Sent CAN message ID {message_id}: {data}")
         except Exception as e:
-            logger.error(f"Error sending CAN message ID {message_id}: {e}")
+            logger.error(f"Error sending CAN message ID {hex(message_id)}: {e}")

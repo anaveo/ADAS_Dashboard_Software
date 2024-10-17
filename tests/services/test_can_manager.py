@@ -16,7 +16,7 @@ def event_loop():
 def can_manager(event_loop):
     # Reset the Singleton state before each test
     CanManager._instance = None
-    return CanManager(loop=event_loop)
+    return CanManager(can_config_path='../../config/can_config.json', loop=event_loop)
 
 
 @pytest.mark.asyncio

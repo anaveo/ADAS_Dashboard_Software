@@ -38,7 +38,7 @@ class DiagnosticModel(QObject):
             self._net_manager.register_udp_callback(self._diagnostic_udp_port, self._udp_callback)
 
             self._can_manager = CanManager()
-            # self._can_manager.register_callback_single_id(0x100, self._can_callback)
+            self._can_manager.register_callback_range_id(0x220, 0x260, self._can_callback)
 
             logger.info(f"Successfully started and registered on UDP port {self._diagnostic_udp_port}")
         except Exception as e:
@@ -84,8 +84,26 @@ class DiagnosticModel(QObject):
         except Exception as e:
             logger.error(f"Error processing data: {e}")
 
-    async def _can_callback(self, message):
-        logger.warning(f"Received CAN message: {message}")
+    async def _device_health_can_callback(self, message):
+        """
+        Callback function to handle incoming CAN messages and emit signals based on the message ID.
+        """
+        can_id = hex(message.arbitration_id)  # Convert message ID to hex string format (e.g., "0x520")
+
+        # Look up the message ID in the message table
+        if can_id not in self._can_manager.msg_table:
+            logger.warning(f"CAN message ID {can_id} is not recognized")
+            return
+
+        # Check if the message DLC matches the expected DLC
+        can_message_info = self._can_manager.msg_table[can_id]
+        if message.dlc != can_message_info['dlc']:
+            logger.warning(f"Received CAN message {can_id} with unexpected DLC {message.dlc}")
+            return
+
+        # Emit signals based on the description associated with the message ID
+        self.data_received.emit(can_message_info['description'], message.data[0], message.data[1])
+        logger.info(f"Signal emitted for CAN message ID {can_id}")
 
     async def stop(self):
         """

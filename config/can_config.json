@@ -1,0 +1,74 @@
+{
+  "0x520": {
+    "description": "left-camera-data",
+    "dlc": 4
+  },
+  "0x530": {
+    "description": "right-camera-data",
+    "dlc": 4
+  },
+  "0x320": {
+    "description": "left-camera-fault",
+    "dlc": 1
+  },
+  "0x340": {
+    "description": "left-ranger-fault",
+    "dlc": 1
+  },
+  "0x310": {
+    "description": "power-module-fault",
+    "dlc": 1
+  },
+  "0x330": {
+    "description": "right-camera-fault",
+    "dlc": 1
+  },
+  "0x350": {
+    "description": "right-ranger-fault",
+    "dlc": 1
+  },
+  "0x360": {
+    "description": "wheel-driver-fault",
+    "dlc": 1
+  },
+  "0x220": {
+    "description": "left-camera-health",
+    "dlc": 2
+  },
+  "0x240": {
+    "description": "left-ranger-health",
+    "dlc": 1
+  },
+  "0x210": {
+    "description": "power-module-health",
+    "dlc": 2
+  },
+  "0x230": {
+    "description": "right-camera-health",
+    "dlc": 2
+  },
+  "0x250": {
+    "description": "right-ranger-health",
+    "dlc": 1
+  },
+  "0x260": {
+    "description": "wheel-driver-health",
+    "dlc": 1
+  },
+  "0x400": {
+    "description": "day-night-mode",
+    "dlc": 1
+  },
+  "0x640": {
+    "description": "left-ranger-data",
+    "dlc": 1
+  },
+  "0x650": {
+    "description": "right-ranger-data",
+    "dlc": 1
+  },
+  "0x100": {
+    "description": "shutdown",
+    "dlc": 0
+  }
+}
