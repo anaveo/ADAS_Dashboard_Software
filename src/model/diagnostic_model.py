@@ -108,7 +108,7 @@ class DiagnosticModel(QObject):
         Callback function to handle incoming CAN status messages and emit signals based on the message ID.
         """
         id = hex(message.arbitration_id)
-        message_info = self._can_manager.msg_table[can_id]
+        message_info = self._can_manager.msg_table[id]
 
         if self._validate_can_message(id, message_info, message):
             # Emit signals based on the description associated with the message ID
@@ -120,7 +120,7 @@ class DiagnosticModel(QObject):
         Callback function to handle incoming CAN fault messages and emit signals based on the message ID.
         """
         id = hex(message.arbitration_id)
-        message_info = self._can_manager.msg_table[can_id]
+        message_info = self._can_manager.msg_table[id]
 
         if self._validate_can_message(id, message_info, message):
             # TODO: Fix/standardize fault messages
@@ -128,6 +128,8 @@ class DiagnosticModel(QObject):
             if message.data[0] < len(fault_msgs):
                 logger.error(f"Invalid fault message index: {message.data[0]}")
                 return
+            device_name = message_info['description'].replace('-fault', '')
+            logger.info(f"Fault message from {device_name}: {fault_msgs[message.data[0]]}")
 
             # Emit signals based on the description associated with the message ID
             self.fault_data_received.emit(message_info['description'], fault_msgs[message.data[0]])
