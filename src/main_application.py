@@ -55,6 +55,12 @@ class MainApplication:
 
     async def init_mvc(self):
         try:
+            # Start the NetworkManager
+            await self.net_manager.start()
+
+            # Start the CanManager
+            await self.can_manager.start()
+
             # Initialize the models
             diagnostic_port = self.config["ports"]["left-cam"]["diagnostic"]
 
@@ -80,12 +86,6 @@ class MainApplication:
 
             # Start the diagnostic model
             await self.diagnostic_model.start()
-
-            # Start the NetworkManager
-            await self.net_manager.start()
-
-            # Start the CanManager
-            await self.can_manager.start()
 
             logger.info("MVC initialization complete.")
 
