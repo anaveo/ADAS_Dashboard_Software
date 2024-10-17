@@ -24,7 +24,7 @@ class DataDisplay(QWidget, Ui_DataDisplay):
 
     def update_error_message(self, message):
         self.errorLabel.setText(QCoreApplication.translate("DataDisplay",
-                                                           f"<html><head/><body><p><span style=\" color:#ff0000;\">{message}</span></p></body></html>",
+                                                           f"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700; color:#ff0000;\">{message}</span></p></body></html>",
                                                            None))
 
     def add_second_indicator(self):
