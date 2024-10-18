@@ -12,7 +12,7 @@ class LinearIndicator(QWidget, Ui_LinearIndicator):
         # Initialize instance variables
         self.high_val = 100
         self.low_val = 0
-        self.blocks = 16  # Number of total blocks
+        self.blocks = 12  # Number of total blocks
         self.val = 0     # Initial value
 
     @staticmethod
@@ -37,7 +37,7 @@ class LinearIndicator(QWidget, Ui_LinearIndicator):
             self.val = new_val
 
         # Trigger repaint only for the blocks area
-        repaint_area = QRect(35, 25, 195, 16)
+        repaint_area = QRect(35, 25, 196, 20)
         self.update(repaint_area)  # Only repaint the area where blocks are drawn
 
     def update_fields(self, measure: str = None, high_str: str = None, low_str: str = None, high_val: int = None,
@@ -74,11 +74,11 @@ class LinearIndicator(QWidget, Ui_LinearIndicator):
         # Draw the blue background bar
         painter.setBrush(QColor(30, 15, 250))  # Blue color
         painter.setPen(Qt.NoPen)
-        painter.drawRect(35, 25, 184, 3)
+        painter.drawRect(35, 25, 185, 3)
         painter.setBrush(QColor(225, 15, 0))  # Blue color
         painter.drawRect(222, 25, 7, 3)
         painter.setBrush(QColor(70, 70, 100))  # Blue color
-        painter.drawRect(35, 31, 194, 10)
+        painter.drawRect(35, 31, 196, 14)
 
         # Calculate how many blocks to fill based on the value
         filled_blocks = int(((self.val - self.low_val) / (self.high_val - self.low_val)) * self.blocks)
@@ -86,7 +86,7 @@ class LinearIndicator(QWidget, Ui_LinearIndicator):
         # Draw the filled (white) blocks
         painter.setBrush(QColor(255, 255, 255))  # White color
         for i in range(filled_blocks):
-            painter.drawRect((i * 10) + 38, 32, 8, 8)  # -2 for a small gap between blocks
+            painter.drawRect((i * 16) + 37, 32, 12, 12)  # -2 for a small gap between blocks
 
         # End painting
         painter.end()
