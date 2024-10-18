@@ -140,7 +140,7 @@ class DiagnosticModel(QObject):
         if self._validate_can_message(id, message_info, message):
             # TODO: Fix/standardize fault messages
             fault_msgs = ["", "THERMAL FAULT", "OVERCURRENT FAULT", "OVERVOLTAGE FAULT", "UNDERVOLTAGE FAULT", "CPU OVERLOAD"]
-            if message.data[0] < len(fault_msgs):
+            if message.data[0] > len(fault_msgs):
                 logger.error(f"Invalid fault message index: {message.data[0]}")
                 return
             device_name = message_info['description'].replace('-fault', '')
