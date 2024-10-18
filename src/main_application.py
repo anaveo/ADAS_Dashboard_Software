@@ -92,7 +92,7 @@ class MainApplication:
         # Start the NetworkManager
         await self.net_manager.start()
 
-        # Start the CanManager and register shutdown CAN message
+        # Start the CanManager and register shutdown callback
         await self.can_manager.start()
         self.can_manager.register_callback_single_id(message_id=0x100, callback=self.shutdown_callback)
 

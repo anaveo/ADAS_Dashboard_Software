@@ -59,6 +59,21 @@ class DiagnosticModel(QObject):
             core_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
             cpu_usage = psutil.cpu_percent(interval=1)
             self.health_data_received.emit(component, core_temp, cpu_usage)
+
+            # Send fault signal based on health conditions
+            component = 'dashboard-fault'
+            if 60 < core_temp <= 70:
+                logger.warning("High temperature detected")
+                self.fault_data_received.emit(component, 'THERMAL FAULT')
+            elif core_temp > 70:
+                logger.error("Critical temperature reached. Shutting down...")
+                # TODO: Add stop here!
+            elif cpu_usage > 90:
+                logger.warning("High CPU usage detected")
+                self.fault_data_received.emit(component, 'CPU OVERLOAD')
+            else:
+                self.fault_data_received.emit(component, '')
+
             time.sleep(10)
 
     def _udp_callback(self, data, addr):
