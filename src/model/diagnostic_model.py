@@ -57,7 +57,7 @@ class DiagnosticModel(QObject):
         while not self._stop_event.is_set():
             component = 'dashboard-health'
             core_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
-            cpu_usage = psutil.cpu_percent(interval=1)
+            cpu_usage = int(psutil.cpu_percent(interval=None))
             self.health_data_received.emit(component, core_temp, cpu_usage)
 
             # Send fault signal based on health conditions
